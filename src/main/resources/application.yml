@@ -1,0 +1,17 @@
+server:
+  port: 8080 # Gateway runs on port 8080
+
+spring:
+  application:
+    name: gateway
+
+grpc:
+  client:
+    exchange-api: # This matches the name in @GrpcClient("gold-api")
+      address: static://localhost:9090 # gRPC server address and port
+      negotiationType: plaintext # No SSL for local development
+
+logging:
+  level:
+    net.devh.boot.grpc: DEBUG
+    io.grpc: DEBUG
