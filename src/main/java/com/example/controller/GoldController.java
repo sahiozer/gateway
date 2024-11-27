@@ -18,22 +18,18 @@ public class GoldController {
     private final GoldServiceGrpc.GoldServiceBlockingStub goldServiceStub;
     private final ExchangeServiceGrpc.ExchangeServiceBlockingStub exchangeServiceStub;
 
-    // Constructor injection
     public GoldController(GoldServiceGrpc.GoldServiceBlockingStub goldServiceStub, ExchangeServiceGrpc.ExchangeServiceBlockingStub exchangeServiceStub) {
         this.goldServiceStub = goldServiceStub;
         this.exchangeServiceStub = exchangeServiceStub;
     }
-    // Simple GET endpoint
+
     @GetMapping("/api/gold/status")
     public String getStatus() {
         return "Gold Gateway is up and running!";
     }
 
-    // Example POST endpoint
-    // Updated POST endpoint to retrieve gold values via gRPC
     @PostMapping("/process")
     public String processGoldRequest(@RequestBody GoldRequest goldRequest) {
-        // Build the gRPC request
         Exchange.GoldPriceRequest grpcRequest = Exchange.GoldPriceRequest.newBuilder()
                 .setCurrency(goldRequest.getCurrency())
                 .build();
@@ -48,7 +44,6 @@ public class GoldController {
         // Call the gRPC service
         Exchange.BankRatesResponse response = exchangeServiceStub.getBankRates(Exchange.EmptyRequest.newBuilder().build());
 
-        // Convert the gRPC response to a list of BankRate objects
         return response.getRatesList().stream()
                 .map(rate -> new BankRate(
                         rate.getBankName(),
@@ -58,7 +53,6 @@ public class GoldController {
                 .collect(Collectors.toList());
     }
 
-    // DTO class for BankRate
     public static class BankRate {
         private final String bankName;
         private final float goldBuyingRate;
